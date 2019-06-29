@@ -3,15 +3,13 @@
 package wgcreate
 
 import (
-	e "errors"
 	"net"
+	"syscall"
+
+	"golang.zx2c4.com/wireguard/device"
 
 	"github.com/xaionaro-go/errors"
 	"github.com/xaionaro-go/netlink"
-)
-
-var (
-	ErrInterfaceNotFound = e.New(`interface not found`)
 )
 
 func findLink(ifaceName string) (link netlink.Link, err error) {
@@ -30,7 +28,7 @@ func findLink(ifaceName string) (link netlink.Link, err error) {
 	return nil, ErrInterfaceNotFound
 }
 
-func Create(preferredInterfaceName string, mtu uint32, shouldRecreate bool) (resultName string, err error) {
+func Create(preferredInterfaceName string, mtu uint32, shouldRecreate bool, logger *device.Logger) (resultName string, err error) {
 	defer func() { err = errors.Wrap(err, preferredInterfaceName, mtu, shouldRecreate) }()
 
 	if shouldRecreate {
@@ -52,11 +50,20 @@ func Create(preferredInterfaceName string, mtu uint32, shouldRecreate bool) (res
 		LinkAttrs: netlink.LinkAttrs{
 			MTU:          int(mtu),
 			Name:         preferredInterfaceName,
+			TxQLen:       1000,
 
 			Flags:        net.FlagUp | net.FlagMulticast | net.FlagBroadcast,
 			OperState:    netlink.OperUp,
 		},
 	})
+
+	if err == syscall.ENOTSUP {
+		logger.Info.Print(`There is no in-kernel support of wireguard on this system. It could negatively affect performance. To avoid it install kernel module "wireguard".`)
+
+		// Fallback to userspace implementation
+		return createUserspace(preferredInterfaceName, mtu, logger)
+	}
+
 	if err != nil {
 		return
 	}
