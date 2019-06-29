@@ -1,6 +1,8 @@
 package wgcreate
 
 import (
+	"runtime"
+
 	"github.com/xaionaro-go/errors"
 	"golang.zx2c4.com/wireguard/device"
 	"golang.zx2c4.com/wireguard/ipc"
@@ -10,6 +12,10 @@ import (
 
 func createUserspace(ifaceName string, mtu uint32, logger *device.Logger) (resultIfaceName string, err error) {
 	defer func() { err = errors.Wrap(err, ifaceName, mtu) }()
+
+	if runtime.GOOS == "darwin" {
+		ifaceName = "utun7"
+	}
 
 	nofileLimit := &syscall.Rlimit{}
 	err = syscall.Getrlimit(syscall.RLIMIT_NOFILE, nofileLimit)
