@@ -6,4 +6,5 @@ import (
 
 var (
 	ErrInterfaceNotFound = errors.New(`interface not found`)
+	ErrNoFreeInterface   = errors.New(`no free interface`)
 )

@@ -1,36 +1,31 @@
 package wgcreate
 
 import (
-	"runtime"
+	"syscall"
 
 	"github.com/xaionaro-go/errors"
 	"golang.zx2c4.com/wireguard/device"
 	"golang.zx2c4.com/wireguard/ipc"
 	"golang.zx2c4.com/wireguard/tun"
-	"syscall"
 )
 
-func createUserspace(ifaceName string, mtu uint32, logger *device.Logger) (resultIfaceName string, err error) {
-	defer func() { err = errors.Wrap(err, ifaceName, mtu) }()
-
-	expectedNofileLimit := uint64(65536)
-	if runtime.GOOS == "darwin" {
-		ifaceName = "utun7"
-		expectedNofileLimit = 12000
-	}
-
+func tryIncreaseNofileTo(newLimit uint64) {
 	nofileLimit := &syscall.Rlimit{}
-	err = syscall.Getrlimit(syscall.RLIMIT_NOFILE, nofileLimit)
+	err := syscall.Getrlimit(syscall.RLIMIT_NOFILE, nofileLimit)
 	if err != nil {
 		return
 	}
-	if nofileLimit.Cur < expectedNofileLimit {
-		nofileLimit.Cur = expectedNofileLimit
-		if nofileLimit.Max < expectedNofileLimit {
-			nofileLimit.Max = expectedNofileLimit
+	if nofileLimit.Cur < newLimit {
+		nofileLimit.Cur = newLimit
+		if nofileLimit.Max < newLimit {
+			nofileLimit.Max = newLimit
 		}
 		_ = syscall.Setrlimit(syscall.RLIMIT_NOFILE, nofileLimit)
 	}
+}
+
+func createUserspace(ifaceName string, mtu uint32, logger *device.Logger) (resultIfaceName string, err error) {
+	defer func() { err = errors.Wrap(err, ifaceName, mtu) }()
 
 	tunDev, err := tun.CreateTUN(ifaceName, int(mtu))
 	if err != nil {
