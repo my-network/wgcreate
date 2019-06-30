@@ -3,7 +3,9 @@
 package wgcreate
 
 import (
+	"github.com/lorenzosaino/go-sysctl"
 	"net"
+	"strconv"
 	"syscall"
 
 	"golang.zx2c4.com/wireguard/device"
@@ -28,10 +30,54 @@ func findLink(ifaceName string) (link netlink.Link, err error) {
 	return nil, ErrInterfaceNotFound
 }
 
+func sysctlGetValue(key string) (intValue int64, err error) {
+	value, err := sysctl.Get(key)
+	if err != nil {
+		return
+	}
+
+	intValue, err = strconv.ParseInt(value, 10, 64)
+	if err != nil {
+		return
+	}
+
+	return
+}
+
+func sysctlIncreaseTo(key string, value int64, logger *device.Logger) {
+	oldValue, err := sysctlGetValue(key)
+	if err != nil {
+		logger.Debug.Printf(`unable to get current sysctl value by key "%v": %v`, key, err)
+		return
+	}
+
+	if value <= oldValue {
+		return
+	}
+
+	err = sysctl.Set(key, strconv.FormatInt(value, 10))
+	if err != nil {
+		logger.Debug.Printf(`unable to set sysctl value by key "%v" to "%v": %v`, key, value, err)
+		return
+	}
+
+	return
+}
+
 func Create(preferredInterfaceName string, mtu uint32, shouldRecreate bool, logger *device.Logger) (resultName string, err error) {
 	defer func() { err = errors.Wrap(err, preferredInterfaceName, mtu, shouldRecreate) }()
 
 	doDefaultsTriesIncreaseNofile()
+
+	sysctlRequiredValues := map[string]int64{
+		"net.ipv4.igmp_max_memberships": 256,
+		"fs.inotify.max_user_instances": 256,
+		"fs.inotify.max_user_watches":   65536,
+	}
+
+	for k, v := range sysctlRequiredValues {
+		sysctlIncreaseTo(k, v, logger)
+	}
 
 	if shouldRecreate {
 		link, err := findLink(preferredInterfaceName)
