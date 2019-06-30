@@ -20,6 +20,10 @@ func AddIP(ifaceName string, newIP net.IP, newSubnet net.IPNet) (err error) {
 		return errors.Wrap(err, ifaceName, subnet.String(), newIP.String())
 	}
 
+	err = exec.Command("/sbin/route", "add", "-net", subnet.String(), "-interface", ifaceName).Run()
+	if err != nil {
+		return errors.Wrap(err, subnet.String(), ifaceName)
+	}
 
 	return
 }

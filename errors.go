@@ -7,4 +7,3 @@ import (
 var (
 	ErrInterfaceNotFound = errors.New(`interface not found`)
 )
-

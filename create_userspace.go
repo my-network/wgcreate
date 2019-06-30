@@ -13,8 +13,10 @@ import (
 func createUserspace(ifaceName string, mtu uint32, logger *device.Logger) (resultIfaceName string, err error) {
 	defer func() { err = errors.Wrap(err, ifaceName, mtu) }()
 
+	expectedNofileLimit := uint64(65536)
 	if runtime.GOOS == "darwin" {
 		ifaceName = "utun7"
+		expectedNofileLimit = 12000
 	}
 
 	nofileLimit := &syscall.Rlimit{}
@@ -22,10 +24,10 @@ func createUserspace(ifaceName string, mtu uint32, logger *device.Logger) (resul
 	if err != nil {
 		return
 	}
-	if nofileLimit.Cur < 65536 {
-		nofileLimit.Cur = 65536
-		if nofileLimit.Max < 65536 {
-			nofileLimit.Max = 65536
+	if nofileLimit.Cur < expectedNofileLimit {
+		nofileLimit.Cur = expectedNofileLimit
+		if nofileLimit.Max < expectedNofileLimit {
+			nofileLimit.Max = expectedNofileLimit
 		}
 		_ = syscall.Setrlimit(syscall.RLIMIT_NOFILE, nofileLimit)
 	}

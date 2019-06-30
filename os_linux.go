@@ -48,12 +48,12 @@ func Create(preferredInterfaceName string, mtu uint32, shouldRecreate bool, logg
 
 	err = netlink.LinkAdd(&netlink.Wireguard{
 		LinkAttrs: netlink.LinkAttrs{
-			MTU:          int(mtu),
-			Name:         preferredInterfaceName,
-			TxQLen:       1000,
+			MTU:    int(mtu),
+			Name:   preferredInterfaceName,
+			TxQLen: 1000,
 
-			Flags:        net.FlagUp | net.FlagMulticast | net.FlagBroadcast,
-			OperState:    netlink.OperUp,
+			Flags:     net.FlagUp | net.FlagMulticast | net.FlagBroadcast,
+			OperState: netlink.OperUp,
 		},
 	})
 
