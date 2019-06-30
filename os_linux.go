@@ -31,7 +31,7 @@ func findLink(ifaceName string) (link netlink.Link, err error) {
 func Create(preferredInterfaceName string, mtu uint32, shouldRecreate bool, logger *device.Logger) (resultName string, err error) {
 	defer func() { err = errors.Wrap(err, preferredInterfaceName, mtu, shouldRecreate) }()
 
-	tryIncreaseNofileTo(65536)
+	doDefaultsTriesIncreaseNofile()
 
 	if shouldRecreate {
 		link, err := findLink(preferredInterfaceName)

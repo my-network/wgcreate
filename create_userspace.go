@@ -9,6 +9,12 @@ import (
 	"golang.zx2c4.com/wireguard/tun"
 )
 
+func doDefaultsTriesIncreaseNofile() {
+	for _, nofileLimit := range []uint64{4096, 12000, 65536, 524288} {
+		tryIncreaseNofileTo(nofileLimit)
+	}
+}
+
 func tryIncreaseNofileTo(newLimit uint64) {
 	nofileLimit := &syscall.Rlimit{}
 	err := syscall.Getrlimit(syscall.RLIMIT_NOFILE, nofileLimit)

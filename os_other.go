@@ -10,9 +10,7 @@ import (
 func Create(preferredInterfaceName string, mtu uint32, shouldRecreate bool, logger *device.Logger) (resultName string, err error) {
 	defer func() { err = errors.Wrap(err, preferredInterfaceName, mtu, shouldRecreate) }()
 
-	tryIncreaseNofileTo(4096)
-	tryIncreaseNofileTo(12000)
-	tryIncreaseNofileTo(65536)
+	doDefaultsTriesIncreaseNofile()
 
 	return createUserspace(preferredInterfaceName, mtu, logger)
 }
