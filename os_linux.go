@@ -3,15 +3,16 @@
 package wgcreate
 
 import (
-	"github.com/lorenzosaino/go-sysctl"
 	"net"
 	"strconv"
 	"syscall"
 
+	"github.com/lorenzosaino/go-sysctl"
 	"golang.zx2c4.com/wireguard/device"
 
-	"github.com/xaionaro-go/errors"
 	"github.com/xaionaro-go/netlink"
+
+	"github.com/xaionaro-go/errors"
 )
 
 func findLink(ifaceName string) (link netlink.Link, err error) {
@@ -82,7 +83,7 @@ func Create(preferredInterfaceName string, mtu uint32, shouldRecreate bool, logg
 	if shouldRecreate {
 		link, err := findLink(preferredInterfaceName)
 
-		if err != nil && err.(errors.SmartError).OriginalError() != ErrInterfaceNotFound {
+		if err != nil && !err.(*errors.Error).Has(ErrInterfaceNotFound) {
 			return "", err
 		}
 

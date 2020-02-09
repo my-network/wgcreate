@@ -1,15 +1,19 @@
 github.com/Microsoft/go-winio v0.4.12/go.mod h1:VhR8bwka0BXejwEJY73c50VrPtXAaKcyvVC4A4RozmA=
+github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/lorenzosaino/go-sysctl v0.1.0 h1:BfWlLYErjQeCb0TB3kzIq5nsVVjKqyT0NKvWqifz7gE=
 github.com/lorenzosaino/go-sysctl v0.1.0/go.mod h1:jp4+NUTRTq8/3QPxrhPPav8j/tCw1yUwZtG0iPWBFcU=
 github.com/pkg/errors v0.8.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
+github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
+github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
+github.com/stretchr/testify v1.4.0/go.mod h1:j7eGeouHqKxXV5pUuKE4zz7dFj8WfuZ+81PSLYec5m4=
 github.com/vishvananda/netlink v1.0.0 h1:bqNY2lgheFIu1meHUFSH3d7vG93AFyqg3oGbJCOJgSM=
 github.com/vishvananda/netlink v1.0.0/go.mod h1:+SR5DhBJrl6ZM7CoCKvpw5BKroDKQ+PJqOg65H/2ktk=
 github.com/vishvananda/netlink v1.0.1-0.20190701183739-2e4a68ee6c16 h1:t9Vs4jQ9QEk14pDS4MFrpslnAOIlrG2FZPJzgDHVlI8=
 github.com/vishvananda/netlink v1.0.1-0.20190701183739-2e4a68ee6c16/go.mod h1:+SR5DhBJrl6ZM7CoCKvpw5BKroDKQ+PJqOg65H/2ktk=
 github.com/vishvananda/netns v0.0.0-20190625233234-7109fa855b0f h1:nBX3nTcmxEtHSERBJaIo1Qa26VwRaopnZmfDQUXsF4I=
 github.com/vishvananda/netns v0.0.0-20190625233234-7109fa855b0f/go.mod h1:ZjcWmFBXmLKZu9Nxj3WKYEafiSqer2rnvPr0en9UNpI=
-github.com/xaionaro-go/errors v0.0.0-20190618051035-77224f41226e h1:F/eH13lqw5gsvbDBqQF+MT4teDhRRLpsDp/THnjdKI4=
-github.com/xaionaro-go/errors v0.0.0-20190618051035-77224f41226e/go.mod h1:X/0ahU5xDFuflxHhtmagf5UZkMQ2YDGk+W1VplJtO/c=
+github.com/xaionaro-go/errors v0.0.0-20200209154903-9fc7351b94d5 h1:OBXLGgovg876xOsLil8JnNOhm+A0yqRtX7SHxLvr+HE=
+github.com/xaionaro-go/errors v0.0.0-20200209154903-9fc7351b94d5/go.mod h1:kbL3cDyZdqjEhQR1+LVHz0/ZYbFpH62e6t3zCDKmbLA=
 github.com/xaionaro-go/netlink v1.0.0 h1:s97oiqNuwSSsb3ILn9cPQL3t9ufnAbGQX36fs6Yvnbg=
 github.com/xaionaro-go/netlink v1.0.0/go.mod h1:XomPmUh5Ma9Xk3fX/Tldf7cDyom9CvqPZczDmrOix80=
 github.com/xaionaro-go/netlink v1.0.1-0.20190629163402-183dfed194ee h1:VLSSKKblehBCC7lo44wMmvqDXlM3QK3nyFhDT7cUpoQ=
@@ -31,3 +35,5 @@ golang.org/x/sys v0.0.0-20190626221950-04f50cda93cb/go.mod h1:h1NjWce9XRLGQEsW7w
 golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
 golang.zx2c4.com/wireguard v0.0.20190517 h1:FQ539AeNmsDek0BvWlaQId62Qe1bJsTwY/hse7SPRus=
 golang.zx2c4.com/wireguard v0.0.20190517/go.mod h1:+Ks6M+8QvlG7Er8n35VNd/G5QnUQsypmpxIdPiAg48A=
+gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
+gopkg.in/yaml.v2 v2.2.2/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=
