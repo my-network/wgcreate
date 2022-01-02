@@ -110,7 +110,7 @@ func Create(preferredInterfaceName string, mtu uint32, shouldRecreate bool, logg
 		logger.Verbosef(`There is no in-kernel support of wireguard on this system. It could negatively affect performance. To avoid it install kernel module "wireguard".`)
 
 		// Fallback to userspace implementation
-		resultName, err = createUserspace(preferredInterfaceName, mtu, logger)
+		resultName, _, err = createUserspace(preferredInterfaceName, mtu, logger)
 		if err != nil {
 			return
 		}

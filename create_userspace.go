@@ -3,6 +3,7 @@ package wgcreate
 import (
 	"syscall"
 
+	"github.com/hashicorp/go-multierror"
 	"github.com/xaionaro-go/errors"
 	"golang.zx2c4.com/wireguard/conn"
 	"golang.zx2c4.com/wireguard/device"
@@ -31,7 +32,7 @@ func tryIncreaseNofileTo(newLimit uint64) {
 	}
 }
 
-func createUserspace(ifaceName string, mtu uint32, logger *device.Logger) (resultIfaceName string, err error) {
+func createUserspace(ifaceName string, mtu uint32, logger *device.Logger) (resultIfaceName string, closeFunc func() error, err error) {
 	defer func() { err = errors.Wrap(err, ifaceName, mtu) }()
 
 	tunDev, err := tun.CreateTUN(ifaceName, int(mtu))
@@ -50,11 +51,14 @@ func createUserspace(ifaceName string, mtu uint32, logger *device.Logger) (resul
 
 	uapiFile, err := ipc.UAPIOpen(resultIfaceName)
 	if err != nil {
+		wgDev.Close()
 		return
 	}
 
 	uapi, err := ipc.UAPIListen(resultIfaceName, uapiFile)
 	if err != nil {
+		wgDev.Close()
+
 		return
 	}
 
@@ -70,6 +74,17 @@ func createUserspace(ifaceName string, mtu uint32, logger *device.Logger) (resul
 	}()
 
 	logger.Verbosef("UAPI started")
+	closeFunc = func() error {
+		var err error
+		if addErr := uapiFile.Close(); addErr != nil {
+			err = multierror.Append(err, addErr)
+		}
+		if addErr := uapi.Close(); addErr != nil {
+			err = multierror.Append(err, addErr)
+		}
+		wgDev.Close()
+		return err
+	}
 
 	return
 }
