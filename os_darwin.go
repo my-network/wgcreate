@@ -11,6 +11,8 @@ import (
 	"strings"
 
 	"github.com/xaionaro-go/errors"
+
+	"golang.zx2c4.com/wireguard/device"
 )
 
 var (
@@ -80,7 +82,7 @@ func findFreeUtunName() (string, error) {
 	return "", ErrNoFreeInterface
 }
 
-func Create(preferredInterfaceName string, mtu uint32, shouldRecreate bool, logger *_device.Logger) (resultName string, err error) {
+func Create(preferredInterfaceName string, mtu uint32, shouldRecreate bool, logger *device.Logger) (resultName string, err error) {
 	defer func() { err = errors.Wrap(err, preferredInterfaceName, mtu, shouldRecreate) }()
 
 	doDefaultsTriesIncreaseNofile()
