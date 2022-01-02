@@ -1,3 +1,4 @@
+//go:build linux
 // +build linux
 
 package wgcreate
@@ -10,9 +11,8 @@ import (
 	"github.com/lorenzosaino/go-sysctl"
 	"golang.zx2c4.com/wireguard/device"
 
-	"github.com/xaionaro-go/netlink"
-
 	"github.com/xaionaro-go/errors"
+	"github.com/xaionaro-go/netlink"
 )
 
 func findLink(ifaceName string) (link netlink.Link, err error) {
@@ -48,7 +48,7 @@ func sysctlGetValue(key string) (intValue int64, err error) {
 func sysctlIncreaseTo(key string, value int64, logger *device.Logger) {
 	oldValue, err := sysctlGetValue(key)
 	if err != nil {
-		logger.Debug.Printf(`unable to get current sysctl value by key "%v": %v`, key, err)
+		logger.Verbosef(`unable to get current sysctl value by key "%v": %v`, key, err)
 		return
 	}
 
@@ -58,7 +58,7 @@ func sysctlIncreaseTo(key string, value int64, logger *device.Logger) {
 
 	err = sysctl.Set(key, strconv.FormatInt(value, 10))
 	if err != nil {
-		logger.Debug.Printf(`unable to set sysctl value by key "%v" to "%v": %v`, key, value, err)
+		logger.Verbosef(`unable to set sysctl value by key "%v" to "%v": %v`, key, value, err)
 		return
 	}
 
@@ -107,7 +107,7 @@ func Create(preferredInterfaceName string, mtu uint32, shouldRecreate bool, logg
 	})
 
 	if err == syscall.ENOTSUP {
-		logger.Info.Print(`There is no in-kernel support of wireguard on this system. It could negatively affect performance. To avoid it install kernel module "wireguard".`)
+		logger.Verbosef(`There is no in-kernel support of wireguard on this system. It could negatively affect performance. To avoid it install kernel module "wireguard".`)
 
 		// Fallback to userspace implementation
 		resultName, err = createUserspace(preferredInterfaceName, mtu, logger)

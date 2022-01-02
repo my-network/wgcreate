@@ -4,6 +4,7 @@ import (
 	"syscall"
 
 	"github.com/xaionaro-go/errors"
+	"golang.zx2c4.com/wireguard/conn"
 	"golang.zx2c4.com/wireguard/device"
 	"golang.zx2c4.com/wireguard/ipc"
 	"golang.zx2c4.com/wireguard/tun"
@@ -43,9 +44,9 @@ func createUserspace(ifaceName string, mtu uint32, logger *device.Logger) (resul
 		return
 	}
 
-	wgDev := device.NewDevice(tunDev, logger)
+	wgDev := device.NewDevice(tunDev, conn.NewDefaultBind(), logger)
 
-	logger.Info.Print("userspace device started")
+	logger.Verbosef("userspace device started")
 
 	uapiFile, err := ipc.UAPIOpen(resultIfaceName)
 	if err != nil {
@@ -61,14 +62,14 @@ func createUserspace(ifaceName string, mtu uint32, logger *device.Logger) (resul
 		for {
 			conn, err := uapi.Accept()
 			if err != nil {
-				logger.Info.Print("unable to accept UAPI connection", err)
+				logger.Verbosef("unable to accept UAPI connection", err)
 				return
 			}
 			go wgDev.IpcHandle(conn)
 		}
 	}()
 
-	logger.Info.Println("UAPI started")
+	logger.Verbosef("UAPI started")
 
 	return
 }
